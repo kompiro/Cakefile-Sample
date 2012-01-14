@@ -7,28 +7,38 @@ VIEW_TEST_PATH = 'test/unit/views'
 TEST_PATHS = [MODEL_TEST_PATH,VIEW_TEST_PATH]
 
 task 'test', (options)->
+  {EventEmitter} = require 'events'
+  emitter = new EventEmitter
+  emitter.once 'expanded',(paths)->
+    runMocha paths
   target = ""
+  pathEmitter = new EventEmitter
+  count = 0
+  pathEmitter.on 'finished',(paths)->
+    count += 1
+    emitter.emit 'expanded',paths if TEST_PATHS.length == count
   TEST_PATHS.forEach (testPath)->
-    target += expansionPath testPath
-  runMocha target
+    expansionPath testPath,(result)->
+      target += result
+      pathEmitter.emit 'finished',target
 
 task 'test_models', (options)->
-  target = expansionPath MODEL_TEST_PATH
-  runMocha target
+  expansionPath MODEL_TEST_PATH,(target)->
+    runMocha target
 
 task 'test_views', (options)->
-  target = expansionPath VIEW_TEST_PATH
-  runMocha target
+  expansionPath VIEW_TEST_PATH,(target)->
+    runMocha target
 
 runMocha = (target)->
   spawn  "sh",['-c',"`npm bin`/mocha -G #{target}"],customFds : [0, 1, 2]
 
-expansionPath = (target)->
-  files = fs.readdirSync target
-  files = files.map (file)->
-    return path.join(target,file)
+expansionPath = (target,callback)->
   expansion = ""
-  files.forEach (file)->
-    expansion += file + ' '
-  return expansion
+  fs.readdir target,(err,files)->
+    files = files.map (file)->
+      return path.join(target,file)
+    files.forEach (file)->
+      expansion += file + ' '
+    callback expansion
 
