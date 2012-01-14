@@ -1,6 +1,7 @@
 {spawn} = require 'child_process'
 fs = require 'fs'
 path = require 'path'
+{log,error} = require 'util'
 
 MODEL_TEST_PATH = 'test/unit/models'
 VIEW_TEST_PATH = 'test/unit/views'
@@ -9,7 +10,7 @@ TEST_PATHS = [
   VIEW_TEST_PATH
 ]
 
-TEST_COMMAND='`npm bin`/mocha'
+TEST_COMMAND="#{__dirname}/node_modules/.bin/mocha"
 TEST_OPTIONS='-G -R spec'
 
 task 'test', (options)->
@@ -37,11 +38,16 @@ task 'test_views', (options)->
     runMocha target
 
 runMocha = (target)->
-  spawn  "sh",['-c',"#{TEST_COMMAND} #{TEST_OPTIONS} #{target}"],customFds : [0, 1, 2]
+  log 'start test'
+  args = "#{TEST_OPTIONS} #{target}".trimRight().split(' ')
+  spawn  "#{TEST_COMMAND}",args,customFds : [0, 1, 2]
 
 expansionPath = (target,callback)->
   expansion = ""
   fs.readdir target,(err,files)->
+    if !files
+      error "Files aren't found. path:'#{target}'"
+      return
     files = files.map (file)->
       return path.join(target,file)
     files.forEach (file)->
