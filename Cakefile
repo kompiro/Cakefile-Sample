@@ -11,7 +11,7 @@ TEST_PATHS = [
 ]
 
 TEST_COMMAND="#{__dirname}/node_modules/.bin/mocha"
-TEST_OPTIONS='-G -R spec'
+TEST_OPTIONS='--growl --report spec'
 
 task 'test', (options)->
   {EventEmitter} = require 'events'
