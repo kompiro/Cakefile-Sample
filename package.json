@@ -1,5 +1,5 @@
 {
-    "name" : "cake-mocha"
+    "name" : "Cakefile-sample"
   , "version" : "0.0.1"
   , "description" : "a sample script of Cakefile integrated with mocha"
   , "scripts" : {
@@ -7,8 +7,9 @@
   }
   , "dependencies" : {
       "coffee-script" : "1.2.0"
-    , "mocha" : "0.9.0"
-    , "growl" : "1.4.1"
+  }
+  , "devDependencies" : {
+      "mocha" : "0.9.0"
     , "should" : "0.5.0"
   }
 }
