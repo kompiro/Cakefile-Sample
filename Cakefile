@@ -16,7 +16,7 @@ task 'test', (options)->
   count = 0
   pathEmitter.on 'finished',(paths)->
     count += 1
-    emitter.emit 'expanded',paths if TEST_PATHS.length == count
+    emitter.emit 'expanded',paths if TEST_PATHS.length is count
   TEST_PATHS.forEach (testPath)->
     expansionPath testPath,(result)->
       target += result
@@ -31,7 +31,7 @@ task 'test_views', (options)->
     runMocha target
 
 runMocha = (target)->
-  spawn  "sh",['-c',"`npm bin`/mocha -G #{target}"],customFds : [0, 1, 2]
+  spawn  "sh",['-c',"`npm bin`/mocha -G #{target} -R spec"],customFds : [0, 1, 2]
 
 expansionPath = (target,callback)->
   expansion = ""
