@@ -4,7 +4,13 @@ path = require 'path'
 
 MODEL_TEST_PATH = 'test/unit/models'
 VIEW_TEST_PATH = 'test/unit/views'
-TEST_PATHS = [MODEL_TEST_PATH,VIEW_TEST_PATH]
+TEST_PATHS = [
+  MODEL_TEST_PATH,
+  VIEW_TEST_PATH
+]
+
+TEST_COMMAND='`npm bin`/mocha'
+TEST_OPTIONS='-G -R spec'
 
 task 'test', (options)->
   {EventEmitter} = require 'events'
@@ -31,7 +37,7 @@ task 'test_views', (options)->
     runMocha target
 
 runMocha = (target)->
-  spawn  "sh",['-c',"`npm bin`/mocha -G #{target} -R spec"],customFds : [0, 1, 2]
+  spawn  "sh",['-c',"#{TEST_COMMAND} #{TEST_OPTIONS} #{target}"],customFds : [0, 1, 2]
 
 expansionPath = (target,callback)->
   expansion = ""
